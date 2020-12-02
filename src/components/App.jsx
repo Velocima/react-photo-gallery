@@ -1,7 +1,12 @@
 import '../css/app.css';
+import Gallery from './Gallery';
 
 function App() {
-	return <div className='App'>Hello World!</div>;
+	return (
+		<div className='App'>
+			<Gallery />
+		</div>
+	);
 }
 
 export default App;
