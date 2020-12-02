@@ -29,16 +29,21 @@ export default function Gallery() {
 	];
 
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
+	const [isCarouselPlaying, setisCarouselPlaying] = useState(true);
 
 	useEffect(() => {
-		setTimeout(() => {
+		const intervalID = setTimeout(() => {
+			if (!isCarouselPlaying) return;
 			if (currentImageIndex !== images.length - 1) {
 				setCurrentImageIndex((prevState) => prevState + 1);
 			} else {
 				setCurrentImageIndex(0);
 			}
-		}, 3000);
-	}, [currentImageIndex]);
+		}, 1000);
+		return () => {
+			clearInterval(intervalID);
+		};
+	}, [currentImageIndex, isCarouselPlaying, images.length]);
 	return (
 		<>
 			<img
@@ -50,6 +55,9 @@ export default function Gallery() {
 					height: '90vh',
 					width: '100%',
 					objectFit: 'cover',
+				}}
+				onClick={() => {
+					setisCarouselPlaying((prevState) => !prevState);
 				}}
 			/>
 		</>
