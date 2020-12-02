@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import wallpaper1 from '../images/wallpaper1.jpg';
 import wallpaper2 from '../images/wallpaper2.jpg';
 import wallpaper3 from '../images/wallpaper3.jpg';
@@ -13,9 +13,45 @@ import wallpaper11 from '../images/wallpaper11.jpg';
 import wallpaper12 from '../images/wallpaper12.jpg';
 
 export default function Gallery() {
+	const images = [
+		wallpaper1,
+		wallpaper2,
+		wallpaper3,
+		wallpaper4,
+		wallpaper5,
+		wallpaper6,
+		wallpaper7,
+		wallpaper8,
+		wallpaper9,
+		wallpaper10,
+		wallpaper11,
+		wallpaper12,
+	];
+
+	const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+	useEffect(() => {
+		setTimeout(() => {
+			if (currentImageIndex !== images.length - 1) {
+				setCurrentImageIndex((prevState) => prevState + 1);
+			} else {
+				setCurrentImageIndex(0);
+			}
+		}, 3000);
+	}, [currentImageIndex]);
 	return (
 		<>
-			<img src={wallpaper1} alt='' />
+			<img
+				id={currentImageIndex}
+				src={images[currentImageIndex]}
+				alt=''
+				style={{
+					marginTop: '10vh',
+					height: '90vh',
+					width: '100%',
+					objectFit: 'cover',
+				}}
+			/>
 		</>
 	);
 }
