@@ -39,19 +39,25 @@ export default function Gallery() {
 			} else {
 				setCurrentImageIndex(0);
 			}
-		}, 1000);
+		}, 3000);
 		return () => {
 			clearInterval(intervalID);
 		};
 	}, [currentImageIndex, isCarouselPlaying, images.length]);
 	return (
 		<>
+			<h1
+				style={{
+					height: '10vh',
+				}}
+			>
+				{isCarouselPlaying ? 'Playing' : 'Paused'}
+			</h1>
 			<img
 				id={currentImageIndex}
 				src={images[currentImageIndex]}
 				alt=''
 				style={{
-					marginTop: '10vh',
 					height: '90vh',
 					width: '100%',
 					objectFit: 'cover',
