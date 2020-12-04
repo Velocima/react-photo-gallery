@@ -30,42 +30,115 @@ export default function Gallery() {
 
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
 	const [isCarouselPlaying, setisCarouselPlaying] = useState(true);
+	const [isImageChanging, setIsImageChanging] = useState({
+		isChanging: false,
+		direction: 'right',
+	});
 
-	useEffect(() => {
-		const intervalID = setTimeout(() => {
-			if (!isCarouselPlaying) return;
-			if (currentImageIndex !== images.length - 1) {
-				setCurrentImageIndex((prevState) => prevState + 1);
-			} else {
-				setCurrentImageIndex(0);
-			}
-		}, 3000);
-		return () => {
-			clearInterval(intervalID);
+	const getNextImageIndex = () => {
+		let index = currentImageIndex + 1;
+		if (index >= images.length) {
+			return 0;
+		}
+		return index;
+	};
+	const getPreviousImageIndex = () => {
+		let index = currentImageIndex - 1;
+		if (index < 0) {
+			return images.length - 1;
+		}
+		return index;
+	};
+
+	const handleNextImageClick = () => {
+		if (isImageChanging.isChanging) return;
+		setIsImageChanging({ isChanging: true, direction: 'right' });
+		setTimeout(() => {
+			setCurrentImageIndex((prevState) =>
+				prevState === images.length - 1 ? 0 : prevState + 1
+			);
+			setIsImageChanging((prevState) => {
+				return { ...prevState, isChanging: false };
+			});
+		}, 500);
+	};
+
+	const handlePreviousImageClick = () => {
+		if (isImageChanging.isChanging) return;
+		setIsImageChanging({ isChanging: true, direction: 'left' });
+		const transitionToNextImage = () => {
+			setCurrentImageIndex((prevState) =>
+				prevState === 0 ? images.length - 1 : prevState - 1
+			);
+			setIsImageChanging((prevState) => {
+				return { ...prevState, isChanging: false };
+			});
 		};
-	}, [currentImageIndex, isCarouselPlaying, images.length]);
+		setTimeout(transitionToNextImage, 500);
+	};
+
+	const buttonStyle = {
+		fontSize: '30px',
+		padding: '10px',
+		borderRadius: '5px',
+	};
+
+	const imageStyle = {
+		height: '50vh',
+		width: '50vh',
+		objectFit: 'cover',
+		transition: isImageChanging.isChanging ? '0.5s' : 'none',
+		transform: !isImageChanging.isChanging
+			? 'translateX(-100%)'
+			: isImageChanging.direction === 'right'
+			? 'translateX(-200%)'
+			: 'translateX(0)',
+	};
 	return (
-		<>
+		<section
+			style={{
+				display: 'grid',
+				placeItems: 'center',
+			}}
+		>
 			<h1
-				style={{
-					height: '10vh',
+				onClick={() => {
+					setisCarouselPlaying((prevState) => !prevState);
 				}}
 			>
 				{isCarouselPlaying ? 'Playing' : 'Paused'}
 			</h1>
-			<img
-				id={currentImageIndex}
-				src={images[currentImageIndex]}
-				alt=''
-				style={{
-					height: '90vh',
-					width: '100%',
-					objectFit: 'cover',
-				}}
-				onClick={() => {
-					setisCarouselPlaying((prevState) => !prevState);
-				}}
-			/>
-		</>
+			<div
+				className='overflow-container'
+				style={{ overflow: 'hidden', display: 'flex', height: '50vh', width: '50vh' }}
+			>
+				<img
+					id={getPreviousImageIndex()}
+					src={images[getPreviousImageIndex()]}
+					alt=''
+					style={imageStyle}
+				/>
+				<img
+					id={currentImageIndex}
+					src={images[currentImageIndex]}
+					alt=''
+					style={imageStyle}
+				/>
+				<img
+					id={getNextImageIndex()}
+					src={images[getNextImageIndex()]}
+					alt=''
+					style={imageStyle}
+				/>
+			</div>
+			<div className='buttons'>
+				<button style={buttonStyle} onClick={handlePreviousImageClick}>
+					left
+				</button>
+				<button style={buttonStyle} onClick={handleNextImageClick}>
+					right
+				</button>
+			</div>
+		</section>
 	);
 }
