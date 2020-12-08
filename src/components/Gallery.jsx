@@ -77,6 +77,15 @@ export default function Gallery() {
 		setTimeout(transitionToNextImage, 500);
 	};
 
+	useEffect(() => {
+		if (isCarouselPlaying) {
+			var intervalID = setInterval(handleNextImageClick, 5000);
+		}
+		return () => {
+			clearInterval(intervalID);
+		};
+	}, [isCarouselPlaying, handleNextImageClick]);
+
 	const buttonStyle = {
 		fontSize: '30px',
 		padding: '10px',
